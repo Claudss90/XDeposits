@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X Depósitos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border: 2px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .add-objective-btn {
+            display: block;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: white;
+            border: 2px solid #333;
+            border-radius: 8px;
+            font-size: 36px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .add-objective-btn:hover {
+            background-color: #f0f0f0;
+        }
+
+        .objectives-section h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .objective-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .objective-item:hover {
+            background-color: #f9f9f9;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin-right: 10px;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .objective-info {
+            min-width: 200px;
+            font-size: 14px;
+        }
+
+        .objective-name {
+            font-weight: bold;
+        }
+
+        .objective-date {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .progress-text {
+            font-size: 12px;
+            color: #666;
+            margin-left: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border: 2px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            min-width: 400px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .deposits-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 5px;
+            margin: 20px 0;
+        }
+
+        .deposit-slot {
+            aspect-ratio: 1;
+            border: 2px solid #333;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .deposit-slot.completed {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .deposit-slot:hover {
+            background-color: #f0f0f0;
+        }
+
+        .deposit-slot.completed:hover {
+            background-color: #45a049;
+        }
+
+        .deposits-info {
+            margin-bottom: 20px;
+        }
+
+        .deposits-info p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+
+        .progress-bar-main {
+            width: 100%;
+            height: 30px;
+            background-color: #e0e0e0;
+            border-radius: 15px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill-main {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .home-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background-color: #2196F3;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .comment {
+            font-style: italic;
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="mainScreen">
+            <h1>X Depósitos</h1>
+            
+            <button class="add-objective-btn" onclick="openAddObjectiveModal()">+</button>
+            <p style="text-align: center; margin-top: -10px; margin-bottom: 20px;">Adicione um Objetivo</p>
+            
+            <div class="objectives-section">
+                <h2>Objetivos salvos:</h2>
+                <div id="objectivesList"></div>
+            </div>
+            
+            <div class="comment">//Tela inicial</div>
+        </div>
+
+        <div id="depositsScreen" style="display: none;">
+            <button class="home-btn" onclick="goHome()">🏠</button>
+            <h1>X Depósitos</h1>
+            
+            <div class="deposits-info">
+                <p><strong>Quantidade de depósitos:</strong> <span id="totalDeposits">0</span></p>
+                <p><strong>Total no fim do objetivo:</strong> R$ <span id="totalGoal">0,00</span></p>
+                <p><strong>Total depositado:</strong> R$ <span id="totalDeposited">0,00</span></p>
+            </div>
+            
+            <div class="progress-bar-main">
+                <div class="progress-fill-main" id="mainProgressFill" style="width: 0%;">0%</div>
+            </div>
+            
+            <div class="deposits-grid" id="depositsGrid"></div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn btn-primary" onclick="saveObjective()">Salvar Objetivo</button>
+                <button class="btn btn-secondary" onclick="discardObjective()">Descartar</button>
+            </div>
+            
+            <div class="comment">//Tela de escolha de nome e qtd de depósitos</div>
+        </div>
+    </div>
+
+    <!-- Modal para adicionar objetivo -->
+    <div id="addObjectiveModal" class="modal">
+        <div class="modal-content">
+            <h2>Adicionar Objetivo</h2>
+            <div class="form-group">
+                <label for="objectiveName">Nome do objetivo:</label>
+                <input type="text" id="objectiveName" placeholder="Ex: Carro 200x">
+            </div>
+            <div class="form-group">
+                <label for="depositQuantity">Quantidade de depósitos:</label>
+                <input type="number" id="depositQuantity" placeholder="Ex: 50" min="1">
+            </div>
+            <div>
+                <button class="btn btn-primary" onclick="addObjective()">+</button>
+                <button class="btn btn-secondary" onclick="closeAddObjectiveModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variáveis globais
+        let objectives = [];
+        let currentObjective = null;
+        let tempObjective = null;
+
+        // Funções utilitárias
+        function calculateTotalValue(quantity) {
+            return (quantity * (quantity + 1)) / 2;
+        }
+
+        function formatDate(date) {
+            if (!(date instanceof Date)) {
+                date = new Date(date);
+            }
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        function formatCurrency(value) {
+            return value.toFixed(2).replace('.', ',');
+        }
+
+        // Funções do modal
+        function openAddObjectiveModal() {
+            document.getElementById('addObjectiveModal').style.display = 'block';
+        }
+
+        function closeAddObjectiveModal() {
+            document.getElementById('addObjectiveModal').style.display = 'none';
+            document.getElementById('objectiveName').value = '';
+            document.getElementById('depositQuantity').value = '';
+        }
+
+        // Função para adicionar objetivo
+        function addObjective() {
+            const name = document.getElementById('objectiveName').value;
+            const quantity = parseInt(document.getElementById('depositQuantity').value);
+
+            if (!name || !quantity) {
+                alert('Por favor, preencha todos os campos');
+                return;
+            }
+
+            const totalValue = calculateTotalValue(quantity);
+
+            tempObjective = {
+                id: Date.now(),
+                name: name,
+                quantity: quantity,
+                totalValue: totalValue,
+                deposited: 0,
+                deposits: Array(quantity).fill(false),
+                createdAt: new Date(),
+                updatedAt: new Date()
+            };
+
+            closeAddObjectiveModal();
+            openObjective(tempObjective.id, true);
+        }
+
+        // Função para renderizar objetivos
+        function renderObjectives() {
+            console.log('Renderizando objetivos. Total:', objectives.length);
+            
+            const list = document.getElementById('objectivesList');
+            
+            // Limpar completamente a lista
+            list.innerHTML = '';
+
+            if (objectives.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #666; font-style: italic;">Nenhum objetivo salvo ainda.</p>';
+                console.log('Nenhum objetivo para mostrar');
+                return;
+            }
+
+            objectives.forEach((obj, index) => {
+                console.log(`Renderizando objetivo ${index + 1}:`, obj.name, 'ID:', obj.id);
+                
+                const progress = obj.totalValue > 0 ? (obj.deposited / obj.totalValue) * 100 : 0;
+                const div = document.createElement('div');
+                div.className = 'objective-item';
+                div.onclick = () => openObjective(obj.id);
+                
+                div.innerHTML = `
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                    <div class="objective-info">
+                        <div class="objective-name">${obj.name}</div>
+                        <div class="objective-date">atualizado em ${formatDate(obj.updatedAt)}</div>
+                    </div>
+                    <div class="progress-text">${progress.toFixed(0)}%</div>
+                    <button class="delete-btn" onclick="event.stopPropagation(); deleteObjective('${obj.id}')" title="Excluir objetivo">×</button>
+                `;
+                
+                list.appendChild(div);
+            });
+            
+            console.log('Renderização concluída');
+        }
+
+        // Função para deletar objetivo
+        function deleteObjective(id) {
+            console.log('Tentando deletar objetivo com ID:', id);
+            
+            if (confirm('Tem certeza que deseja excluir este objetivo?')) {
+                // Converter ID para número se necessário
+                const numericId = typeof id === 'string' ? parseInt(id) : id;
+                
+                const initialLength = objectives.length;
+                objectives = objectives.filter(obj => obj.id !== numericId);
+                
+                console.log('Objetivos antes:', initialLength, 'Objetivos depois:', objectives.length);
+                console.log('Objetivos restantes:', objectives);
+                
+                if (objectives.length < initialLength) {
+                    saveObjectivesToStorage();
+                    renderObjectives(); // Esta linha deve atualizar a tela
+                    console.log('Objetivo deletado com sucesso e tela atualizada');
+                } else {
+                    console.log('Erro: Objetivo não foi encontrado para deletar. ID procurado:', numericId);
+                    console.log('IDs disponíveis:', objectives.map(obj => obj.id));
+                }
+            }
+        }
+
+        // Função para abrir objetivo
+        function openObjective(id, isTemp = false) {
+            if (isTemp && tempObjective) {
+                currentObjective = tempObjective;
+            } else {
+                currentObjective = objectives.find(obj => obj.id === id);
+            }
+            
+            if (!currentObjective) return;
+
+            document.getElementById('mainScreen').style.display = 'none';
+            document.getElementById('depositsScreen').style.display = 'block';
+            
+            renderDepositsScreen();
+        }
+
+        // Função para renderizar tela de depósitos
+        function renderDepositsScreen() {
+            if (!currentObjective) return;
+
+            document.getElementById('totalDeposits').textContent = currentObjective.quantity;
+            document.getElementById('totalGoal').textContent = formatCurrency(currentObjective.totalValue);
+            document.getElementById('totalDeposited').textContent = formatCurrency(currentObjective.deposited);
+
+            const progress = currentObjective.totalValue > 0 ? (currentObjective.deposited / currentObjective.totalValue) * 100 : 0;
+            document.getElementById('mainProgressFill').style.width = progress + '%';
+            document.getElementById('mainProgressFill').textContent = Math.round(progress) + '%';
+
+            const grid = document.getElementById('depositsGrid');
+            grid.innerHTML = '';
+
+            for (let i = 0; i < currentObjective.quantity; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'deposit-slot';
+                slot.textContent = i + 1;
+                
+                if (currentObjective.deposits[i]) {
+                    slot.classList.add('completed');
+                }
+                
+                slot.onclick = () => toggleDeposit(i);
+                grid.appendChild(slot);
+            }
+        }
+
+        // Função para alternar depósito
+        function toggleDeposit(index) {
+            if (!currentObjective) return;
+
+            const depositValue = index + 1;
+
+            currentObjective.deposits[index] = !currentObjective.deposits[index];
+            
+            if (currentObjective.deposits[index]) {
+                currentObjective.deposited += depositValue;
+            } else {
+                currentObjective.deposited -= depositValue;
+            }
+            
+            currentObjective.updatedAt = new Date();
+            renderDepositsScreen();
+        }
+
+        // Função para salvar objetivo
+        function saveObjective() {
+            if (currentObjective) {
+                const existingIndex = objectives.findIndex(obj => obj.id === currentObjective.id);
+                
+                if (existingIndex === -1) {
+                    objectives.push(currentObjective);
+                } else {
+                    objectives[existingIndex] = currentObjective;
+                }
+                
+                saveObjectivesToStorage();
+                tempObjective = null;
+                goHome();
+            }
+        }
+
+        // Função para descartar objetivo
+        function discardObjective() {
+            tempObjective = null;
+            currentObjective = null;
+            goHome();
+        }
+
+        // Funções de armazenamento
+        function saveObjectivesToStorage() {
+            try {
+                window.localStorage.setItem('objectives', JSON.stringify(objectives));
+            } catch (e) {
+                console.log('Erro ao salvar no localStorage:', e);
+            }
+        }
+
+        function loadObjectivesFromStorage() {
+            try {
+                const stored = window.localStorage.getItem('objectives');
+                if (stored) {
+                    objectives = JSON.parse(stored).map(obj => ({
+                        ...obj,
+                        createdAt: new Date(obj.createdAt),
+                        updatedAt: new Date(obj.updatedAt)
+                    }));
+                }
+            } catch (e) {
+                console.log('Erro ao carregar do localStorage:', e);
+                objectives = [];
+            }
+        }
+
+        // Função para voltar à tela inicial
+        function goHome() {
+            document.getElementById('depositsScreen').style.display = 'none';
+            document.getElementById('mainScreen').style.display = 'block';
+            renderObjectives();
+        }
+
+        // Inicializar aplicação
+        document.addEventListener('DOMContentLoaded', function() {
+            loadObjectivesFromStorage();
+            renderObjectives();
+        });
+
+        // Fallback caso DOMContentLoaded já tenha passado
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                loadObjectivesFromStorage();
+                renderObjectives();
+            });
+        } else {
+            loadObjectivesFromStorage();
+            renderObjectives();
+        }
+    </script>
+</body>
+</html>
